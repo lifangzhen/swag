@@ -137,6 +137,7 @@ func (parser *Parser) ParseAPI(searchDir string, mainAPIFile string) error {
 	var t depth.Tree
 
 	absMainAPIFilePath, err := filepath.Abs(filepath.Join(searchDir, mainAPIFile))
+	//absMainAPIFilePath = "/Users/policylee/workspace/github/swag/cmd/swag/main.go";
 	if err != nil {
 		return err
 	}
@@ -488,6 +489,7 @@ func (parser *Parser) ParseRouterAPIInfo(fileName string, astFile *ast.File) err
 				operation := NewOperation() //for per 'function' comment, create a new 'Operation' object
 				operation.parser = parser
 				for _, comment := range astDeclaration.Doc.List {
+					fmt.Println(comment.Text)
 					if err := operation.ParseComment(comment.Text, astFile); err != nil {
 						return fmt.Errorf("ParseComment error in file %s :%+v", fileName, err)
 					}

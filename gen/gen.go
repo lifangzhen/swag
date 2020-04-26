@@ -1,6 +1,7 @@
 package gen
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -126,6 +127,47 @@ func (g *Gen) Build(config *Config) error {
 	log.Printf("create docs.go at %+v", docFileName)
 	log.Printf("create swagger.json at %+v", jsonFileName)
 	log.Printf("create swagger.yaml at %+v", yamlFileName)
+
+	//替换类型标志位
+	fileName := "./docs/swagger.json"
+	in, err := os.Open(fileName)
+	if err != nil {
+		fmt.Println("open file fail:", err)
+		os.Exit(-1)
+	}
+	defer in.Close()
+
+	out, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, 0777)
+	if err != nil {
+		fmt.Println("Open write file fail:", err)
+		os.Exit(-1)
+	}
+	defer out.Close()
+
+	br := bufio.NewReader(in)
+	index := 1
+	for {
+		line, _, err := br.ReadLine()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("read err:", err)
+			os.Exit(-1)
+		}
+		if string(line) == ""  {
+			break
+		}
+
+		newLine := strings.Replace(string(line), "\"true|bool\"", "true", -1)
+		_, err = out.WriteString(newLine + "\n")
+		if err != nil {
+			fmt.Println("write to file fail:", err)
+			os.Exit(-1)
+		}
+		index++
+	}
+
 
 	return nil
 }
