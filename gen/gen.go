@@ -160,7 +160,7 @@ func (g *Gen) Build(config *Config) error {
 		}
 
 		newLine := strings.Replace(string(line), "\"true|bool\"", "true", -1)
-		newLine = strings.Replace(newLine, "\"false|bool\"", "true", -1)
+		newLine = strings.Replace(newLine, "\"false|bool\"", "false", -1)
 		_, err = out.WriteString(newLine + "\n")
 		if err != nil {
 			fmt.Println("write to file fail:", err)
